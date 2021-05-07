@@ -1,5 +1,7 @@
 'use strict'
 const path = require('path')
+const WebpackBar = require('webpackbar')
+
 const defaultSettings = require('./src/settings.js')
 
 function resolve(dir) {
@@ -16,6 +18,7 @@ const name = defaultSettings.title || 'vue Admin Template' // page title
 const port = process.env.port || process.env.npm_config_port || 9528 // dev port
 
 // All configuration item explanations can be find in https://cli.vuejs.org/config/
+
 module.exports = {
   /**
    * You will need to set publicPath if you plan to deploy your site under a sub path,
@@ -32,6 +35,7 @@ module.exports = {
   devServer: {
     port: port,
     open: true,
+    progress: false,
     overlay: {
       warnings: false,
       errors: true
@@ -62,6 +66,9 @@ module.exports = {
 
     // when there are many pages, it will cause too many meaningless requests
     config.plugins.delete('prefetch')
+
+    // WebpackBar
+    config.plugin().use(WebpackBar, [{ name: 'server' }])
 
     // set svg-sprite-loader
     config.module
