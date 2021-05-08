@@ -1,7 +1,7 @@
 <!--
  * @FilePath src/views/login/index.vue
  * @Created Bay丶<baizhanying@autobio.com.cn> 2021-05-07 15:01:04
- * @Modified Bay丶<baizhanying@autobio.com.cn> 2021-05-07 18:38:52
+ * @Modified Bay丶<baizhanying@autobio.com.cn> 2021-05-08 17:24:40
  * @Description 登录
 -->
 
@@ -24,13 +24,9 @@
         <span class="svg-container">
           <svg-icon icon-class="password" />
         </span>
-        <el-input :key="passwordType" ref="password" v-model="loginForm.password" :type="passwordType" placeholder="请输入密码..." name="密码" tabindex="2" auto-complete="on" @keyup.enter.native="handleLogin" />
-        <span class="show-pwd" @click="showPwd">
-          <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
-        </span>
-      </el-form-item>
 
-      <password-strong-progress :pwd="loginForm.password" />
+        <password-input v-model="loginForm.password" tabindex="2" @keyup.enter.native="handleLogin" />
+      </el-form-item>
 
       <el-button :loading="loading" type="primary" size="default" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">登录</el-button>
     </el-form>
@@ -38,12 +34,13 @@
 </template>
 
 <script>
-import PasswordStrongProgress from '@/components/PasswordStrongProgress'
-import { validUsername } from '@/utils/validate'
+import PasswordInput from '@/components/PasswordInput'
+
+import { validUsername, validPassword } from '@/utils/validate'
 
 export default {
   name: 'Login',
-  components: { PasswordStrongProgress },
+  components: { PasswordInput },
   data() {
     const validateUsername = (rule, value, callback) => {
       if (!validUsername(value)) {
@@ -53,8 +50,15 @@ export default {
       }
     }
     const validatePassword = (rule, value, callback) => {
-      if (value.length < 6) {
-        callback(new Error('密码不能少于 6 个字符'))
+      // 仅限制密码长度大于 6 位
+      // if (value.length < 6) {
+      //   callback(new Error('密码不能少于 6 个字符'))
+      // } else {
+      //   callback()
+      // }
+
+      if (!validPassword(value)) {
+        callback(new Error('密码长度必须6-16之间，且密码必须至少包含一个数字，一个大写字母，一个小写字母和一个特殊字符。'))
       } else {
         callback()
       }
@@ -62,7 +66,7 @@ export default {
     return {
       loginForm: {
         username: process.env.NODE_ENV === 'development' ? 'A3245' : '',
-        password: process.env.NODE_ENV === 'development' ? '123456' : ''
+        password: process.env.NODE_ENV === 'development' ? 'Bai930706..' : ''
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
@@ -128,7 +132,8 @@ $cursor: #fff;
 
 /* reset element-ui css */
 .login-container {
-  .el-input {
+  .el-input,
+  .password-input-with--eye {
     display: inline-block;
     height: 47px;
     width: 85%;
@@ -147,6 +152,14 @@ $cursor: #fff;
         box-shadow: 0 0 0px 1000px $bg inset !important;
         -webkit-text-fill-color: $cursor !important;
       }
+    }
+  }
+
+  .password-input-with--eye {
+    width: calc(100% - 30px);
+    .el-input {
+      // width: calc(100% - 40px);
+      width: 91.1%;
     }
   }
 
@@ -179,7 +192,7 @@ $light_gray: #eee;
     top: 0;
     height: 100%;
     width: 100%;
-    background: url(https://picsum.photos/seed/picsum/1920/950) center no-repeat;
+    background: url(https://picsum.photos/1920/950) center no-repeat $bg;
     background-size: cover;
   }
 
@@ -191,9 +204,8 @@ $light_gray: #eee;
     margin: 0 auto;
     overflow: hidden;
   }
-  // .password-input,
-  .password-input + .el-progress {
-    margin-bottom: 10px;
+  .password-input {
+    margin-bottom: 40px;
   }
 
   .tips {
@@ -228,14 +240,8 @@ $light_gray: #eee;
     }
   }
 
-  .show-pwd {
-    position: absolute;
-    right: 10px;
-    top: 7px;
-    font-size: 16px;
+  ::v-deep .show-pwd {
     color: $light_gray;
-    cursor: pointer;
-    user-select: none;
   }
 }
 </style>

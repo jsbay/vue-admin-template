@@ -1,5 +1,8 @@
 <template>
-  <el-progress v-if="pwd" :format="format" :stroke-width="20" :percentage="percentage" :text-inside="true" :color="customColor" />
+  <div class="password-strong-container">
+    <el-progress v-if="textInside && pwd.length >= minPwdLen" class="" :format="format" :stroke-width="16" :percentage="percentage" :text-inside="true" :color="customColor" stroke-linecap="square" />
+    <el-progress v-else-if="!textInside && pwd.length >= minPwdLen" class="el-progress--text-outside" :format="format" :stroke-width="8" :percentage="percentage" :color="customColor" stroke-linecap="square" />
+  </div>
 </template>
 
 <script>
@@ -9,23 +12,28 @@ export default {
     pwd: {
       type: [String, Number],
       default: ''
+    },
+    textInside: {
+      type: Boolean,
+      default() { return false }
     }
   },
   data() {
     return {
+      minPwdLen: 4,
       customColor: [
-        { color: '#f56c6c', percentage: 20 },
-        { color: '#e6a23c', percentage: 40 },
-        { color: '#5cb87a', percentage: 60 },
-        { color: '#1989fa', percentage: 80 },
-        { color: '#6f7ad3', percentage: 100 }
+        { color: '#F56C6C', percentage: 20 },
+        { color: '#E6A23C', percentage: 40 },
+        { color: '#409EFF', percentage: 60 },
+        { color: '#67C23A', percentage: 80 },
+        { color: '#67C23A', percentage: 100 }
       ]
     }
   },
   computed: {
     pwdStrong() {
       let strong = 0
-      if (this.pwd.length < 4) return strong
+      if (this.pwd.length < this.minPwdLen) return strong
       if (/\d/.test(this.pwd)) strong++ // 数字
       if (/[a-z]/.test(this.pwd)) strong++ // 小写
       if (/[A-Z]/.test(this.pwd)) strong++ // 大写
@@ -62,23 +70,22 @@ export default {
 $bg: #2d3a4b;
 $dark_gray: #889aa4;
 $light_gray: #eee;
-
-.password-container {
-  display: inline-block;
-  width: 85%;
-
-  .el-input {
-    width: 100%;
-  }
-
-  .show-pwd {
-    position: absolute;
-    right: 10px;
-    top: 7px;
-    font-size: 16px;
-    color: $light_gray;
-    cursor: pointer;
-    user-select: none;
+.password-strong-container {
+  margin: 10px 0;
+  .el-progress--text-outside {
+    font-size: 0;
+    ::v-deep .el-progress-bar {
+      padding-right: 0;
+      width: calc(100% - 100px);
+      margin-right: 0;
+    }
+    ::v-deep .el-progress__text {
+      margin-left: 0;
+      display: inline-block;
+      width: 100px;
+      text-align: right;
+      font-size: 12px !important;
+    }
   }
 }
 </style>

@@ -27,6 +27,9 @@ if (process.env.NODE_ENV === 'production') {
   mockXHR()
 }
 
+// 全局禁止 dialog 点击空白关闭
+ElementUI.Dialog.props.closeOnClickModal.default = false
+console.log(ElementUI.Dialog.props.width.default)
 // 如果想要中文版 element-ui，按如下方式声明
 Vue.use(ElementUI, { size: 'small' })
 
