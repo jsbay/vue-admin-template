@@ -1,12 +1,12 @@
 <!--
- * @FilePath src/layout/components/DialogChangePassword/index.vue
+ * @FilePath src/layout/components/PasswordChangeDialog/index.vue
  * @Created Bay丶<baizhanying@autobio.com.cn> 2021-05-08 10:54:12
- * @Modified Bay丶<baizhanying@autobio.com.cn> 2021-05-08 18:15:52
+ * @Modified Bay丶<baizhanying@autobio.com.cn> 2021-05-10 16:50:57
  * @Description 全局修改密码 dialog
 -->
 
 <template>
-  <el-dialog width="600px" :visible.sync="show" title="修改密码" :lock-scroll="false" destroy-on-close @closed="closed">
+  <form-dialog title="修改密码" @closed="closed" @confirm="confirm">
     <el-form ref="form" :rules="formRules" :model="form" label-width="80px">
       <el-form-item label="原密码" prop="oldPwd">
         <password-input ref="passwordInput1" v-model="form.oldPwd" placeholder="请输入原密码..." />
@@ -21,25 +21,22 @@
         <password-input ref="passwordInput3" v-model="form.rePwd" placeholder="请再次输入新密码..." />
       </el-form-item>
     </el-form>
+  </form-dialog>
 
-    <template #footer>
-      <el-button plain @click="close()">取消</el-button>
-      <el-button type="primary">确认修改</el-button>
-    </template>
-  </el-dialog>
 </template>
 
 <script>
+import FormDialog from '@/components/FormDialog'
 import PasswordInput from '@/components/PasswordInput'
 import PasswordStrongProgress from '@/components/PasswordStrongProgress'
-import DialogCommon from '@/mixin/DialogCommon'
+import FormDialogCommon from '@/mixin/FormDialogCommon'
 
 import { validPassword } from '@/utils/validate'
 
 export default {
-  name: 'DialogChangePassword',
-  components: { PasswordInput, PasswordStrongProgress },
-  mixins: [DialogCommon],
+  name: 'PasswordChangeDialog',
+  components: { FormDialog, PasswordInput, PasswordStrongProgress },
+  mixins: [FormDialogCommon],
   data() {
     const validatePassword = (rule, value, callback) => {
       // 仅限制密码长度大于 6 位
@@ -92,6 +89,9 @@ export default {
       this.$nextTick(() => {
         this.$refs.password.focus()
       })
+    },
+    confirm() {
+      // todo 发送请求, 与后端完成交互
     }
   }
 }

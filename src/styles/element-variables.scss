@@ -1,7 +1,7 @@
 /*
  * @FilePath src/styles/element-variables.scss
  * @Created Bay丶<baizhanying@autobio.com.cn> 2021-05-07 15:36:12
- * @Modified Bay丶<baizhanying@autobio.com.cn> 2021-05-10 11:01:32
+ * @Modified Bay丶<baizhanying@autobio.com.cn> 2021-05-11 16:40:03
  * @Description element-ui 主题自定义
  */
 
@@ -45,7 +45,7 @@ $--font-path: "~element-ui/lib/theme-chalk/fonts";
 @import "~element-ui/packages/theme-chalk/src/time-picker.scss";
 // @import "~element-ui/packages/theme-chalk/src/popover.scss";
 // @import "~element-ui/packages/theme-chalk/src/tooltip.scss";
-// @import "~element-ui/packages/theme-chalk/src/message-box.scss";
+@import "~element-ui/packages/theme-chalk/src/message-box.scss";
 @import "~element-ui/packages/theme-chalk/src/breadcrumb.scss";
 @import "~element-ui/packages/theme-chalk/src/breadcrumb-item.scss";
 @import "~element-ui/packages/theme-chalk/src/form.scss";

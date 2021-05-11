@@ -8,13 +8,13 @@
       </div>
       <app-main />
 
-      <dialog-change-password ref="passChangeDialog" />
+      <password-change-dialog ref="passChangeDialog" />
     </div>
   </div>
 </template>
 
 <script>
-import { Navbar, Sidebar, AppMain, DialogChangePassword } from './components'
+import { Navbar, Sidebar, AppMain, PasswordChangeDialog } from './components'
 import ResizeMixin from './mixin/ResizeHandler'
 
 export default {
@@ -23,7 +23,7 @@ export default {
     Navbar,
     Sidebar,
     AppMain,
-    DialogChangePassword
+    PasswordChangeDialog
   },
   mixins: [ResizeMixin],
   computed: {

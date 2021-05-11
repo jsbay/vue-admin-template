@@ -150,6 +150,18 @@ export const constantRoutes = [
   },
 
   {
+    path: '/menu',
+    component: Layout,
+    // hidden: true,
+    children: [{
+      path: '/menu',
+      name: 'Menu',
+      component: () => import('@/views/menu/index'),
+      meta: { title: 'Menu', icon: 'dashboard' }
+    }]
+  },
+
+  {
     path: 'external-link',
     component: Layout,
     children: [

@@ -193,6 +193,7 @@ module.exports = {
     'object-curly-spacing': [2, 'always', {
       objectsInObjects: false
     }],
-    'array-bracket-spacing': [2, 'never']
+    'array-bracket-spacing': [2, 'never'],
+    'vue/component-name-in-template-casing': [2, 'kebab-case']
   }
 }
