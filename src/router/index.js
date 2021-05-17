@@ -157,7 +157,19 @@ export const constantRoutes = [
       path: '/menu',
       name: 'Menu',
       component: () => import('@/views/menu/index'),
-      meta: { title: 'Menu', icon: 'dashboard' }
+      meta: { title: '菜单管理', icon: 'menu' }
+    }]
+  },
+
+  {
+    path: '/user',
+    component: Layout,
+    // hidden: true,
+    children: [{
+      path: '/user',
+      name: 'User',
+      component: () => import('@/views/user/index'),
+      meta: { title: '用户管理', icon: 'user-manage' }
     }]
   },
 

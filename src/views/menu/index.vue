@@ -1,7 +1,7 @@
 <!--
  * @FilePath src/views/menu/index.vue
  * @Created Bay丶<baizhanying@autobio.com.cn> 2021-05-10 11:45:26
- * @Modified Bay丶<baizhanying@autobio.com.cn> 2021-05-11 17:58:36
+ * @Modified Bay丶<baizhanying@autobio.com.cn> 2021-05-14 17:06:22
  * @Description 菜单管理
 -->
 
@@ -12,7 +12,7 @@
         <el-button type="primary" @click="handleCreate(undefined)">新增</el-button>
       </el-col>
     </el-row>
-    <el-table v-loading="listLoading" :data="list" element-loading-text="加载中..." border fit stripe highlight-current-row row-key="id">
+    <el-table :data="menus" element-loading-text="加载中..." border fit stripe highlight-current-row row-key="id" default-expand-all>
       <el-table-column label="菜单名" prop="menu" />
       <el-table-column label="权限 ID" prop="permission" />
 
@@ -24,13 +24,13 @@
         </template>
       </el-table-column>
     </el-table>
-    <create-dialog ref="createDialog" :parent-node="parentNode" @success="getTableData" />
-    <modify-dialog ref="modifyDialog" :parent-node="parentNode" @success="getTableData" />
+    <create-dialog ref="createDialog" :parent-node="parentNode" @success="getMenus" />
+    <modify-dialog ref="modifyDialog" :parent-node="parentNode" @success="getMenus" />
   </div>
 </template>
 
 <script>
-import { getList } from '@/api/menu'
+import { getList, destory } from '@/api/menu'
 
 import CreateDialog from '@/views/menu/components/CreateDialog'
 import ModifyDialog from '@/views/menu/components/ModifyDialog'
@@ -42,13 +42,12 @@ export default {
   },
   data() {
     return {
-      listLoading: false,
-      list: [],
+      menus: [],
       parentNode: undefined
     }
   },
   mounted() {
-    this.getTableData()
+    this.getMenus()
   },
   methods: {
     // 新增
@@ -57,19 +56,22 @@ export default {
       this.$refs.createDialog.open()
     },
     // 确认删除
-    confirmDestory(node) {
-      this.$confirm('确定删除本行，删除后将无法恢复，是否继续？', '警告', {
-        type: 'warning',
-        cancelButtonText: '取消',
-        confirmButtonText: '是',
-        callback(action) {
-          if (action === 'confirm') this.handleDestory(node)
-        }
-      })
+    async confirmDestory(node) {
+      try {
+        await this.$confirm('确定删除本行，删除后将无法恢复，是否继续？', '警告', {
+          type: 'warning',
+          cancelButtonText: '取消',
+          confirmButtonText: '是'
+        })
+        this.handleDestory(node)
+      } catch (error) {
+        if (error === 'cancel') this.$message.info('已取消')
+      }
     },
-    // todo 发送删除请求
-    handleDestory(node) {
-
+    async handleDestory(node) {
+      const { id } = node
+      await destory({ id })
+      await this.getMenus()
     },
     // 修改
     handleModify(node) {
@@ -77,11 +79,13 @@ export default {
       this.$refs.modifyDialog.open()
     },
     // 获取 菜单数据
-    async getTableData() {
-      this.listLoading = true
-      const { data: { items }} = await getList()
-      this.list = items
-      this.listLoading = false
+    async getMenus() {
+      const loading = this.$loading()
+
+      const { data: { menus }} = await getList()
+      this.menus = menus
+
+      loading.close()
     }
   }
 }

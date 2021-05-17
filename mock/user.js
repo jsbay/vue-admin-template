@@ -1,83 +1,68 @@
+const Mock = require('mockjs')
 
-const tokens = {
-  'A3245': {
-    token: 'admin-token'
-  },
-  editor: {
-    token: 'editor-token'
-  }
-}
-
-const users = {
-  'admin-token': {
-    roles: ['admin'],
-    introduction: 'I am a super administrator',
-    avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
-    name: 'Super Admin'
-  },
-  'editor-token': {
-    roles: ['editor'],
-    introduction: 'I am an editor',
-    avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
-    name: 'Normal Editor'
-  }
-}
+const data = Mock.mock({
+  'users|200': [{
+    'id|+1': 100000000,
+    'username': /^A\d{4}/,
+    'nickname': '@cname',
+    'email': '@email',
+    'status|1': [-1, 0, 1, 2],
+    createtime: '@datetime'
+  }]
+})
 
 module.exports = [
-  // user login
+  // 列表
   {
-    url: '/vue-admin-template/user/login',
-    type: 'post',
-    response: config => {
-      const { username } = config.body
-      const token = tokens[username]
-
-      // mock error
-      if (!token) {
-        return {
-          code: 60204,
-          message: 'Account and password are incorrect.'
-        }
-      }
-
-      return {
-        code: 20000,
-        data: token
-      }
-    }
-  },
-
-  // get user info
-  {
-    url: '/vue-admin-template/user/info\.*',
+    url: '/vue-admin-template/users',
     type: 'get',
     response: config => {
-      const { token } = config.query
-      const info = users[token]
+      const { query } = config
+      const total = data.users.length
 
-      // mock error
-      if (!info) {
-        return {
-          code: 50008,
-          message: 'Login failed, unable to get user details.'
-        }
-      }
+      const start = (query.page - 1) * query.limit
+      const end = start + (query.limit - 0)
 
+      const users = data.users.slice(start, end)
       return {
         code: 20000,
-        data: info
+        data: {
+          total,
+          users
+        }
       }
     }
   },
-
-  // user logout
+  // 新增
   {
-    url: '/vue-admin-template/user/logout',
+    url: '/vue-admin-template/user',
     type: 'post',
-    response: _ => {
+    response: config => {
       return {
         code: 20000,
-        data: 'success'
+        data: {}
+      }
+    }
+  },
+  // 修改
+  {
+    url: '/vue-admin-template/user',
+    type: 'patch',
+    response: config => {
+      return {
+        code: 20000,
+        data: {}
+      }
+    }
+  },
+  // 删除
+  {
+    url: '/vue-admin-template/user',
+    type: 'delete',
+    response: config => {
+      return {
+        code: 20000,
+        data: {}
       }
     }
   }

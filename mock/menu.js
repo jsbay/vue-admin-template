@@ -1,7 +1,7 @@
 const Mock = require('mockjs')
 
 const data = Mock.mock({
-  'items|10': [{
+  'menus|10': [{
     'id|+1': 100000000,
     'menu|1': ['一级菜单 1', '一级菜单 2', '一级菜单 3', '一级菜单 4', '一级菜单 5', '一级菜单 6', '一级菜单 7', '一级菜单 8', '一级菜单 9', '一级菜单 10', '一级菜单11', '一级菜单 12'],
     'status|1': ['使用中', '暂停使用', '已删除'],
@@ -27,12 +27,12 @@ module.exports = [
     url: '/vue-admin-template/menus',
     type: 'get',
     response: config => {
-      const items = data.items
+      const { menus } = data
       return {
         code: 20000,
         data: {
-          total: items.length,
-          items: items
+          total: menus.length,
+          menus: menus
         }
       }
     }
