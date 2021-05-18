@@ -150,27 +150,28 @@ export const constantRoutes = [
   },
 
   {
-    path: '/menu',
+    path: '/setting',
     component: Layout,
-    // hidden: true,
-    children: [{
-      path: '/menu',
-      name: 'Menu',
-      component: () => import('@/views/menu/index'),
-      meta: { title: '菜单管理', icon: 'menu' }
-    }]
-  },
-
-  {
-    path: '/user',
-    component: Layout,
-    // hidden: true,
-    children: [{
-      path: '/user',
-      name: 'User',
-      component: () => import('@/views/user/index'),
-      meta: { title: '用户管理', icon: 'user-manage' }
-    }]
+    redirect: '/setting/user',
+    name: '系统设置',
+    meta: {
+      title: '系统设置',
+      icon: 'setting'
+    },
+    children: [
+      {
+        path: 'user',
+        component: () => import('@/views/settings/user/index'), // Parent router-view
+        name: '用户管理',
+        meta: { title: '用户管理', icon: 'user' }
+      },
+      {
+        path: 'menu',
+        component: () => import('@/views/settings/menu/index'), // Parent router-view
+        name: '菜单管理',
+        meta: { title: '菜单管理', icon: 'menu' }
+      }
+    ]
   },
 
   {

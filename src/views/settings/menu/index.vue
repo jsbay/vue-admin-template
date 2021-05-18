@@ -1,7 +1,7 @@
 <!--
  * @FilePath src/views/menu/index.vue
  * @Created Bay丶<baizhanying@autobio.com.cn> 2021-05-10 11:45:26
- * @Modified Bay丶<baizhanying@autobio.com.cn> 2021-05-14 17:06:22
+ * @Modified Bay丶<baizhanying@autobio.com.cn> 2021-05-18 14:54:16
  * @Description 菜单管理
 -->
 
@@ -32,8 +32,8 @@
 <script>
 import { getList, destory } from '@/api/menu'
 
-import CreateDialog from '@/views/menu/components/CreateDialog'
-import ModifyDialog from '@/views/menu/components/ModifyDialog'
+import CreateDialog from '@/views/settings/menu/components/CreateDialog'
+import ModifyDialog from '@/views/settings/menu/components/ModifyDialog'
 export default {
   name: 'Menu',
   components: {
