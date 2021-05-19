@@ -1,12 +1,28 @@
 const Mock = require('mockjs')
 
+const roles = [
+  {
+    id: 1,
+    name: '超级管理员'
+  },
+  {
+    id: 2,
+    name: '编辑'
+  },
+  {
+    id: 3,
+    name: '设备员'
+  }
+]
+
 const data = Mock.mock({
   'users|200': [{
     'id|+1': 100000000,
     'username': /^A\d{4}/,
     'nickname': '@cname',
-    'email': '@email',
+    'email': /^[a-z0-9]{2,4}\.?[a-z0-9]{2,4}@autobio\.com\.cn/,
     'status|1': [-1, 0, 1, 2],
+    'role|1': roles,
     createtime: '@datetime'
   }]
 })
@@ -63,6 +79,19 @@ module.exports = [
       return {
         code: 20000,
         data: {}
+      }
+    }
+  },
+  // 列表
+  {
+    url: '/vue-admin-template/user/roles',
+    type: 'get',
+    response: config => {
+      return {
+        code: 20000,
+        data: {
+          roles
+        }
       }
     }
   }

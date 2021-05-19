@@ -1,7 +1,7 @@
 <!--
  * @FilePath src/views/user/index.vue
  * @Created Bay丶<baizhanying@autobio.com.cn> 2021-05-12 10:19:14
- * @Modified Bay丶<baizhanying@autobio.com.cn> 2021-05-18 18:00:05
+ * @Modified Bay丶<baizhanying@autobio.com.cn> 2021-05-19 14:31:43
  * @Description
 -->
 
@@ -30,6 +30,9 @@
         <el-table-column prop="createtime" label="创建时间" align="center" width="150px" />
         <el-table-column prop="username" label="账户" align="center" width="80px" />
         <el-table-column prop="nickname" label="用户名" align="center" width="80px" />
+        <el-table-column prop="role" label="权限" align="center" width="100px">
+          <template slot-scope="{ row }">{{ row.role.name }}</template>
+        </el-table-column>
 
         <el-table-column prop="status" label="账户状态" align="center" width="100px">
           <template slot-scope="{ row }">
@@ -50,13 +53,13 @@
       </el-table>
     </pagination-table>
 
-    <create-dialog ref="createDialog" @success="getUsers" />
-    <modify-dialog ref="modifyDialog" :user="user" @success="getUsers" />
+    <create-dialog ref="createDialog" :roles="roles" @success="getUsers" />
+    <modify-dialog ref="modifyDialog" :roles="roles" :user="user" @success="getUsers" />
   </div>
 </template>
 
 <script>
-import { getList, destory } from '@/api/user'
+import { getList, destory, getRoles } from '@/api/user'
 import PaginationTable from '@/components/PaginationTable'
 
 import CreateDialog from '@/views/settings/user/components/CreateDialog'
@@ -76,11 +79,13 @@ export default {
         page: 1,
         limit: 20
       },
-      user: {}
+      user: {},
+      roles: []
     }
   },
   mounted() {
     this.getUsers()
+    this.getRoles()
   },
   methods: {
     async getUsers() {
@@ -91,6 +96,10 @@ export default {
       this.total = total
 
       loading.close()
+    },
+    async getRoles() {
+      const { data: { roles }} = await getRoles()
+      this.roles = roles
     },
     handleFilter() {
       this.$refs.paginationTable.resetCurrentPage()

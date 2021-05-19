@@ -16,3 +16,6 @@ export function destory(params) {
   return request.delete('/vue-admin-template/user', { params })
 }
 
+export function getRoles(params) {
+  return request.get('/vue-admin-template/user/roles', { params })
+}

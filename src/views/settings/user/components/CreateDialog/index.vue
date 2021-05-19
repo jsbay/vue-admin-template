@@ -1,7 +1,7 @@
 <!--
  * @FilePath src/views/user/components/CreateDialog/index.vue
  * @Created Bay丶<baizhanying@autobio.com.cn> 2021-05-18 10:46:13
- * @Modified Bay丶<baizhanying@autobio.com.cn> 2021-05-18 14:27:00
+ * @Modified Bay丶<baizhanying@autobio.com.cn> 2021-05-19 14:32:12
  * @Description 用户管理 - 新增
 -->
 
@@ -18,6 +18,12 @@
 
       <el-form-item label="邮箱" prop="email">
         <el-input v-model.trim="form.email" placeholder="请输入邮箱" clearable />
+      </el-form-item>
+
+      <el-form-item label="权限" prop="role">
+        <el-select v-model="form.role" style="width: 100%;">
+          <el-option v-for="role in roles" :key="role.id" :label="role.name" :value="role.id" />
+        </el-select>
       </el-form-item>
 
       <el-form-item label="密码" prop="password">
@@ -42,6 +48,14 @@ export default {
   name: 'UserCreateDialog',
   components: { FormDialog, PasswordInput },
   mixins: [FormDialogCommon],
+  props: {
+    roles: {
+      type: Array,
+      default() {
+        return []
+      }
+    }
+  },
   data() {
     const validateUsername = (rule, value, callback) => {
       if (!validUsername(value)) {
