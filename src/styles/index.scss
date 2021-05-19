@@ -68,3 +68,12 @@ div:focus {
 .text-right {
   text-align: right;
 }
+
+.table-filter-form .el-form-item {
+  margin-bottom: 0;
+}
+.el-table {
+  .el-link + .el-link {
+    margin-left: 5px;
+  }
+}

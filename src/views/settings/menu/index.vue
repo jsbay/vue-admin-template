@@ -1,7 +1,7 @@
 <!--
  * @FilePath src/views/menu/index.vue
  * @Created Bay丶<baizhanying@autobio.com.cn> 2021-05-10 11:45:26
- * @Modified Bay丶<baizhanying@autobio.com.cn> 2021-05-18 14:54:16
+ * @Modified Bay丶<baizhanying@autobio.com.cn> 2021-05-18 16:53:33
  * @Description 菜单管理
 -->
 
@@ -93,9 +93,6 @@ export default {
 
 <style lang="scss" scoped>
 .table-top-bar {
-  margin-bottom: 20px;
-}
-.el-link + .el-link {
-  margin-left: 5px;
+  margin-bottom: 10px;
 }
 </style>

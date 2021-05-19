@@ -1,7 +1,7 @@
 <!--
  * @FilePath src/views/user/components/ModifyDialog/index.vue
  * @Created Bay丶<baizhanying@autobio.com.cn> 2021-05-18 10:46:13
- * @Modified Bay丶<baizhanying@autobio.com.cn> 2021-05-18 14:34:31
+ * @Modified Bay丶<baizhanying@autobio.com.cn> 2021-05-18 18:01:24
  * @Description 用户管理 - 修改
 -->
 
@@ -25,7 +25,7 @@
       </el-form-item>
 
       <el-form-item label="账户状态" prop="status">
-        <el-switch v-model="form.locked" active-color="#ff4949" inactive-color="#13ce66" active-text="禁用" inactive-text="正常" />
+        <el-switch v-model="form.locked" active-color="#E6A23C" inactive-color="#13ce66" active-text="禁用" inactive-text="正常" />
       </el-form-item>
     </el-form>
   </form-dialog>

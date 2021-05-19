@@ -51,7 +51,7 @@ export const constantRoutes = [
       path: 'dashboard',
       name: 'Dashboard',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: 'Dashboard', icon: 'dashboard' }
+      meta: { title: '主页', icon: 'dashboard' }
     }]
   },
 
@@ -164,6 +164,12 @@ export const constantRoutes = [
         component: () => import('@/views/settings/user/index'), // Parent router-view
         name: '用户管理',
         meta: { title: '用户管理', icon: 'user' }
+      },
+      {
+        path: 'role',
+        component: () => import('@/views/settings/role/index'), // Parent router-view
+        name: '权限管理',
+        meta: { title: '权限管理', icon: 'role' }
       },
       {
         path: 'menu',

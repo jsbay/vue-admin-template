@@ -1,8 +1,8 @@
 <!--
- * @FilePath src/views/user/index.vue
- * @Created Bay丶<baizhanying@autobio.com.cn> 2021-05-12 10:19:14
- * @Modified Bay丶<baizhanying@autobio.com.cn> 2021-05-18 18:00:05
- * @Description
+ * @FilePath src/views/settings/role/index.vue
+ * @Created Bay丶<baizhanying@autobio.com.cn> 2021-05-18 15:48:36
+ * @Modified Bay丶<baizhanying@autobio.com.cn> 2021-05-18 17:59:47
+ * @Description 系统设置 - 权限管理
 -->
 
 <template>
@@ -14,7 +14,7 @@
           <el-col>
             <el-form ref="form" inline :model="form" label-width="0" class="table-filter-form">
               <el-form-item>
-                <el-input v-model="form.keyword" placeholder="用户 ID/用户名/账户" />
+                <el-input v-model="form.keyword" placeholder="权限名" />
               </el-form-item>
               <el-form-item>
                 <el-button type="primary" @click="handleFilter">查询</el-button>
@@ -24,21 +24,21 @@
         </el-row>
       </template>
 
-      <el-table :data="users" border stripe>
+      <el-table :data="roles" border stripe>
+        <el-table-column prop="role" label="权限名" align="center" width="100px" />
 
-        <el-table-column prop="id" label="用户 ID" align="center" width="100px" />
-        <el-table-column prop="createtime" label="创建时间" align="center" width="150px" />
-        <el-table-column prop="username" label="账户" align="center" width="80px" />
-        <el-table-column prop="nickname" label="用户名" align="center" width="80px" />
-
-        <el-table-column prop="status" label="账户状态" align="center" width="100px">
+        <el-table-column prop="status" label="状态" align="center" width="80px">
           <template slot-scope="{ row }">
-            <el-tag v-if="row.status === -1" type="warning" effect="dark">禁用</el-tag>
-            <el-tag v-else-if="row.status === 0" type="info" effect="dark">注册中</el-tag>
+            <el-tag v-if="row.status === 0" type="warning" effect="dark">禁用</el-tag>
             <el-tag v-else type="success" effect="dark">正常</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="email" label="邮箱" />
+
+        <el-table-column prop="permissions" label="权限">
+          <template slot-scope="{ row }">
+            {{ parsePermissions(row) }}
+          </template>
+        </el-table-column>
 
         <el-table-column prop="action" label="操作" align="center" width="100px">
           <template slot-scope="{ row }">
@@ -46,23 +46,24 @@
             <el-link type="danger" :underline="false" @click="confirmDestory(row)"> 删除</el-link>
           </template>
         </el-table-column>
-
       </el-table>
     </pagination-table>
 
-    <create-dialog ref="createDialog" @success="getUsers" />
-    <modify-dialog ref="modifyDialog" :user="user" @success="getUsers" />
+    <create-dialog ref="createDialog" :permissions="permissions" @success="getRoles" />
+    <modify-dialog ref="modifyDialog" :permissions="permissions" :role="role" @success="getRoles" />
   </div>
 </template>
 
 <script>
-import { getList, destory } from '@/api/user'
 import PaginationTable from '@/components/PaginationTable'
 
-import CreateDialog from '@/views/settings/user/components/CreateDialog'
-import ModifyDialog from '@/views/settings/user/components/ModifyDialog'
+import CreateDialog from '@/views/settings/role/components/CreateDialog'
+import ModifyDialog from '@/views/settings/role/components/ModifyDialog'
+
+import { getList, getPermissions, destory } from '@/api/role'
+
 export default {
-  name: 'User',
+  name: 'Role',
   components: {
     PaginationTable,
     CreateDialog,
@@ -70,36 +71,49 @@ export default {
   },
   data() {
     return {
-      total: 0,
-      users: [],
       form: {
         page: 1,
         limit: 20
       },
-      user: {}
+      roles: [],
+      total: 0,
+      role: {},
+      permissions: []
     }
   },
   mounted() {
-    this.getUsers()
+    this.getRoles()
+    this.getPermissions()
   },
   methods: {
-    async getUsers() {
+    async getRoles() {
       const loading = this.$loading()
 
-      const { data: { users, total }} = await getList(this.form)
-      this.users = users
+      const { data: { roles, total }} = await getList(this.form)
+      this.roles = roles
       this.total = total
 
       loading.close()
     },
+    async getPermissions() {
+      const { data: { permissions }} = await getPermissions()
+      this.permissions = permissions
+    },
+    parsePermissions(row) {
+      const permissions = row.permissions.map(permission => permission.name)
+      return permissions.join(', ')
+    },
+    // 查询
     handleFilter() {
       this.$refs.paginationTable.resetCurrentPage()
     },
+    // 新增
     handleCreate() {
       this.$refs.createDialog.open()
     },
+    // 修改
     handleModify(row) {
-      this.user = row
+      this.role = row
       this.$refs.modifyDialog.open()
     },
     // 确认删除
@@ -118,15 +132,15 @@ export default {
     async handleDestory(row) {
       const { id } = row
       await destory({ id })
-      await this.getUsers()
+      await this.getRoles()
     },
     handleCurrentChange(page) {
       this.$set(this.form, 'page', page)
-      this.getUsers()
+      this.getRoles()
     },
     handleSizeChange(limit) {
       this.$set(this.form, 'limit', limit)
-      this.getUsers()
+      this.getRoles()
     }
   }
 }

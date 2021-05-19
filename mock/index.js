@@ -5,12 +5,14 @@ const login = require('./login')
 const user = require('./user')
 const table = require('./table')
 const menu = require('./menu')
+const role = require('./role')
 
 const mocks = [
   ...login,
   ...user,
   ...table,
-  ...menu
+  ...menu,
+  ...role
 ]
 
 // for front mock
