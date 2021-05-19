@@ -1,6 +1,6 @@
 const Mock = require('mockjs')
 
-const permissions = [{ name: '活动管理-审核', value: '1' }, { name: '活动管理-排号', value: '2' }, { name: '活动管理-充值', value: '3' }, { name: '活动管理-放单', value: '4' }]
+const permissions = [{ name: '活动管理-审核', id: '1' }, { name: '活动管理-排号', id: '2' }, { name: '活动管理-充值', id: '3' }, { name: '活动管理-放单', id: '4' }]
 
 const data = Mock.mock({
   'roles|200': [{
@@ -8,7 +8,8 @@ const data = Mock.mock({
     'role': '@cname',
     'status|1': [-1, 0, 1, 2],
     createtime: '@datetime',
-    'permissions': '@shuffle([{ name: "活动管理-审核", value: "1" }, { name: "活动管理-排号", value: "2" }, { name: "活动管理-充值", value: "3" }, { name: "活动管理-放单", value: "4" }], 0, 4)'
+    // 'permissions': '@shuffle([{ name: "活动管理-审核", id: "1" }, { name: "活动管理-排号", id: "2" }, { name: "活动管理-充值", id: "3" }, { name: "活动管理-放单", id: "4" }], 0, 4)'
+    'permissions': `@shuffle(${JSON.stringify(permissions)}, 0, 4)`
   }]
 })
 

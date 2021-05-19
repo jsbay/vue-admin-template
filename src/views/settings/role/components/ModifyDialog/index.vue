@@ -1,7 +1,7 @@
 <!--
  * @FilePath src/views/settings/role/components/ModifyDialog/index.vue
  * @Created Bay丶<baizhanying@autobio.com.cn> 2021-05-18 16:56:45
- * @Modified Bay丶<baizhanying@autobio.com.cn> 2021-05-18 18:14:28
+ * @Modified Bay丶<baizhanying@autobio.com.cn> 2021-05-19 14:45:54
  * @Description 系统设置 - 权限管理 - 修改
 -->
 
@@ -20,9 +20,9 @@
         <el-select v-model="selectedPermissions" multiple placeholder="选择权限" style="width: 100%" @change="handleChange">
           <el-option
             v-for="permission in permissions"
-            :key="permission.value"
+            :key="permission.id"
             :label="permission.name"
-            :value="permission.value"
+            :value="permission.id"
           />
         </el-select>
       </el-form-item>
@@ -67,7 +67,7 @@ export default {
       handler(nv) {
         if (nv) {
           this.$set(this, 'form', { ...nv })
-          this.$set(this, 'selectedPermissions', nv.permissions.map(permission => permission.value))
+          this.$set(this, 'selectedPermissions', nv.permissions?.map(permission => permission.id))
           return nv.status <= 0 && this.$set(this.form, 'locked', true)
         }
       },

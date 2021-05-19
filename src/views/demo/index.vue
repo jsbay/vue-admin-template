@@ -1,7 +1,7 @@
 <!--
  * @FilePath src/views/demo/index.vue
  * @Created Bay丶<baizhanying@autobio.com.cn> 2021-05-19 09:18:00
- * @Modified Bay丶<baizhanying@autobio.com.cn> 2021-05-19 09:35:12
+ * @Modified Bay丶<baizhanying@autobio.com.cn> 2021-05-19 14:52:42
  * @Description demo
 -->
 <template>
@@ -12,7 +12,12 @@
       <el-table-column label="nickname" prop="nickname" />
       <el-table-column label="email" prop="email" />
       <el-table-column label="phone" prop="phone" />
-      <el-table-column label="permissions" prop="permissions" />
+      <!-- <el-table-column label="permissions" prop="permissions" /> -->
+      <el-table-column label="permissions" prop="permissions">
+        <template slot-scope="{ row }">
+          {{ row.permissions.map(permission => permission.name).join() }}
+        </template>
+      </el-table-column>
     </el-table>
   </div>
 </template>

@@ -1,7 +1,7 @@
 <!--
  * @FilePath src/views/settings/role/components/CreateDialog/index.vue
  * @Created Bay丶<baizhanying@autobio.com.cn> 2021-05-18 16:56:42
- * @Modified Bay丶<baizhanying@autobio.com.cn> 2021-05-18 18:11:48
+ * @Modified Bay丶<baizhanying@autobio.com.cn> 2021-05-19 14:46:22
  * @Description  系统设置 - 权限管理 - 新增
 -->
 <template>
@@ -15,9 +15,9 @@
         <el-select v-model="selectedPermissions" multiple placeholder="选择权限" style="width: 100%" @change="handleChange">
           <el-option
             v-for="permission in permissions"
-            :key="permission.value"
+            :key="permission.id"
             :label="permission.name"
-            :value="permission.value"
+            :value="permission.id"
           />
         </el-select>
       </el-form-item>

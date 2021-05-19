@@ -1,7 +1,7 @@
 <!--
  * @FilePath src/views/user/components/ModifyDialog/index.vue
  * @Created Bay丶<baizhanying@autobio.com.cn> 2021-05-18 10:46:13
- * @Modified Bay丶<baizhanying@autobio.com.cn> 2021-05-19 14:35:44
+ * @Modified Bay丶<baizhanying@autobio.com.cn> 2021-05-19 14:44:38
  * @Description 用户管理 - 修改
 -->
 
@@ -96,7 +96,7 @@ export default {
       handler(nv) {
         if (nv) {
           this.$set(this, 'form', { ...nv })
-          this.$set(this.form, 'role', nv.role.id)
+          this.$set(this.form, 'role', nv.role?.id)
           return nv.status <= 0 && this.$set(this.form, 'locked', true)
         }
       },
