@@ -1,7 +1,7 @@
 <!--
  * @FilePath src/views/reset/index.vue
  * @Created Bay丶<baizhanying@autobio.com.cn> 2021-05-19 15:35:05
- * @Modified Bay丶<baizhanying@autobio.com.cn> 2021-05-19 16:43:59
+ * @Modified Bay丶<baizhanying@autobio.com.cn> 2021-05-19 17:47:00
  * @Description 密码重置
 -->
 <template>
@@ -35,7 +35,7 @@
 
       <el-form-item prop="newPwd" class="password-input">
         <span class="svg-container">
-          <svg-icon icon-class="validateCode" />
+          <svg-icon icon-class="password" />
         </span>
         <password-input ref="passwordInput1" v-model="form.newPwd" placeholder="请输入新密码..." />
       </el-form-item>
@@ -44,7 +44,7 @@
 
       <el-form-item prop="rePwd" class="password-input">
         <span class="svg-container">
-          <svg-icon icon-class="validateCode" />
+          <svg-icon icon-class="password" />
         </span>
         <password-input ref="passwordInput2" v-model="form.rePwd" placeholder="请再次输入新密码..." />
       </el-form-item>
