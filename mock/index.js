@@ -1,6 +1,7 @@
 const Mock = require('mockjs')
 const { param2Obj } = require('./utils')
 
+const demo = require('./demo')
 const login = require('./login')
 const user = require('./user')
 const table = require('./table')
@@ -8,6 +9,7 @@ const menu = require('./menu')
 const role = require('./role')
 
 const mocks = [
+  ...demo,
   ...login,
   ...user,
   ...table,
