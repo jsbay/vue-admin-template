@@ -1,7 +1,7 @@
 <!--
  * @FilePath src/layout/components/PasswordChangeDialog/index.vue
  * @Created Bay丶<baizhanying@autobio.com.cn> 2021-05-08 10:54:12
- * @Modified Bay丶<baizhanying@autobio.com.cn> 2021-05-10 16:50:57
+ * @Modified Bay丶<baizhanying@autobio.com.cn> 2021-05-19 16:30:15
  * @Description 全局修改密码 dialog
 -->
 
