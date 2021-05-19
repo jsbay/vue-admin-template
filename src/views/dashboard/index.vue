@@ -1,6 +1,7 @@
 <template>
   <div class="dashboard-container">
-    <div class="dashboard-text">name: {{ name }}</div>
+    <div class="dashboard-text">username: {{ username }}</div>
+    <div class="dashboard-text">nickname: {{ nickname }}</div>
   </div>
 </template>
 
@@ -11,7 +12,8 @@ export default {
   name: 'Dashboard',
   computed: {
     ...mapGetters([
-      'name'
+      'username',
+      'nickname'
     ])
   }
 }
