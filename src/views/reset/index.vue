@@ -1,7 +1,7 @@
 <!--
  * @FilePath src/views/reset/index.vue
  * @Created Bay丶<baizhanying@autobio.com.cn> 2021-05-19 15:35:05
- * @Modified Bay丶<baizhanying@autobio.com.cn> 2021-05-19 17:47:00
+ * @Modified Bay丶<baizhanying@autobio.com.cn> 2021-05-20 14:10:55
  * @Description 密码重置
 -->
 <template>
@@ -62,6 +62,8 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie'
+
 import PasswordInput from '@/components/PasswordInput'
 import PasswordStrongProgress from '@/components/PasswordStrongProgress'
 
@@ -101,7 +103,7 @@ export default {
     return {
       sending: false,
       sendBtnText: '发送验证码',
-      sendInterval: 120,
+      sendInterval: 10,
       form: {},
       formRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
@@ -126,6 +128,30 @@ export default {
       immediate: true
     }
   },
+  mounted() {
+    const nextSendTime = Cookies.get('nextSendTime') - 0
+
+    if (nextSendTime && nextSendTime !== 0) {
+      let sendInterval = nextSendTime
+      this.sendBtnText = `${sendInterval} S 后再次发送`
+      this.sending = true
+      Cookies.set('nextSendTime', sendInterval)
+
+      const timer = setInterval(() => {
+        --sendInterval
+        this.sendBtnText = `${sendInterval} S 后再次发送`
+        Cookies.set('nextSendTime', sendInterval)
+
+        if (sendInterval === 0) {
+          clearInterval(timer)
+          Cookies.remove('nextSendTime')
+          this.sendBtnText = '再次发送'
+          this.sending = false
+          return
+        }
+      }, 1000)
+    }
+  },
   methods: {
     handleReset() {
       this.$refs.form.validate(async valid => {
@@ -148,16 +174,21 @@ export default {
       await sendCode()
 
       let sendInterval = this.sendInterval
-      this.sendBtnText = `${this.sendInterval} S 后再次发送`
+      this.sendBtnText = `${sendInterval} S 后再次发送`
       this.sending = true
+      Cookies.set('nextSendTime', sendInterval)
 
       const timer = setInterval(() => {
-        sendInterval--
+        --sendInterval
         this.sendBtnText = `${sendInterval} S 后再次发送`
+        Cookies.set('nextSendTime', sendInterval)
+
         if (sendInterval === 0) {
           clearInterval(timer)
+          Cookies.remove('nextSendTime')
           this.sendBtnText = '再次发送'
           this.sending = false
+          return
         }
       }, 1000)
     }
