@@ -1,7 +1,7 @@
 <!--
  * @FilePath src/views/menu/components/CreateDialog/index.vue
  * @Created Bay丶<baizhanying@autobio.com.cn> 2021-05-10 15:46:10
- * @Modified Bay丶<baizhanying@autobio.com.cn> 2021-05-11 18:04:05
+ * @Modified Bay丶<baizhanying@autobio.com.cn> 2021-05-26 11:21:13
  * @Description 菜单 新增
 -->
 
@@ -14,6 +14,10 @@
 
       <el-form-item label="菜单名" prop="menu">
         <el-input v-model.trim="form.menu" placeholder="请输入菜单名" clearable />
+      </el-form-item>
+
+      <el-form-item label="权限 ID" prop="permission">
+        <el-input v-model.trim="form.permission" placeholder="请输入权限 ID" clearable />
       </el-form-item>
     </el-form>
   </form-dialog>
@@ -43,6 +47,9 @@ export default {
       formRules: {
         menu: [
           { required: true, trigger: ['change', 'blur'], message: '菜单名不能为空' }
+        ],
+        permission: [
+          { required: true, trigger: ['change', 'blur'], message: '权限 ID 不能为空' }
         ]
       }
     }

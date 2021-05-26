@@ -1,19 +1,19 @@
 <!--
  * @FilePath src/views/menu/components/ModifyDialog/index.vue
  * @Created Bay丶<baizhanying@autobio.com.cn> 2021-05-11 16:35:17
- * @Modified Bay丶<baizhanying@autobio.com.cn> 2021-05-11 18:04:13
+ * @Modified Bay丶<baizhanying@autobio.com.cn> 2021-05-26 11:23:17
  * @Description 菜单 - 修改
 -->
 
 <template>
-  <form-dialog title="新增" :closed="resetForm" @confirm="confirm">
+  <form-dialog title="修改" :closed="resetForm" @confirm="confirm">
     <el-form ref="form" :rules="formRules" :model="form" label-width="80px">
-      <el-form-item v-if="parentNode" label="上级菜单" prop="lastLevel">
-        <el-input v-model="parentNode.menu" placeholder="请输入菜单名" disabled />
+      <el-form-item label="菜单名" prop="menu">
+        <el-input v-model.trim="parentNode.menu" placeholder="请输入菜单名" clearable />
       </el-form-item>
 
-      <el-form-item label="菜单名" prop="menu">
-        <el-input v-model.trim="form.menu" placeholder="请输入菜单名" clearable />
+      <el-form-item label="权限 ID" prop="permission">
+        <el-input v-model.trim="form.permission" placeholder="请输入权限 ID" clearable />
       </el-form-item>
     </el-form>
   </form-dialog>
@@ -42,6 +42,9 @@ export default {
       formRules: {
         menu: [
           { required: true, trigger: ['change', 'blur'], message: '菜单名不能为空' }
+        ],
+        permission: [
+          { required: true, trigger: ['change', 'blur'], message: '权限 ID 不能为空' }
         ]
       }
     }
@@ -50,7 +53,7 @@ export default {
     parentNode: {
       handler(nv) {
         if (nv) {
-          return this.$set(this.form, 'parentId', nv.id)
+          return this.$set(this, 'form', nv)
         }
       },
       immediate: true
