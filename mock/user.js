@@ -30,7 +30,7 @@ const data = Mock.mock({
 module.exports = [
   // 列表
   {
-    url: '/vue-admin-template/users',
+    url: '/users',
     type: 'get',
     response: config => {
       const { query } = config
@@ -51,7 +51,7 @@ module.exports = [
   },
   // 新增
   {
-    url: '/vue-admin-template/user',
+    url: '/user',
     type: 'post',
     response: config => {
       return {
@@ -62,7 +62,7 @@ module.exports = [
   },
   // 修改
   {
-    url: '/vue-admin-template/user',
+    url: '/user',
     type: 'patch',
     response: config => {
       return {
@@ -73,7 +73,7 @@ module.exports = [
   },
   // 删除
   {
-    url: '/vue-admin-template/user',
+    url: '/user',
     type: 'delete',
     response: config => {
       return {
@@ -84,7 +84,7 @@ module.exports = [
   },
   // 列表
   {
-    url: '/vue-admin-template/user/roles',
+    url: '/user/roles',
     type: 'get',
     response: config => {
       return {

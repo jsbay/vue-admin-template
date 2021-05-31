@@ -1,7 +1,7 @@
 module.exports = [
   // user login
   {
-    url: '/vue-admin-template/reset',
+    url: '/reset',
     type: 'post',
     response: config => {
       return {
@@ -10,7 +10,7 @@ module.exports = [
     }
   },
   {
-    url: '/vue-admin-template/reset/sendCode',
+    url: '/reset/sendCode',
     type: 'post',
     response: config => {
       return {

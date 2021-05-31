@@ -1,21 +1,21 @@
 import request from '@/utils/request'
 
 export function getList(params) {
-  return request.get('/vue-admin-template/roles', { params })
+  return request.get('/roles', { params })
 }
 
 export function create(data) {
-  return request.post('/vue-admin-template/role', data)
+  return request.post('/role', data)
 }
 
 export function modify(data) {
-  return request.patch('/vue-admin-template/role', data)
+  return request.patch('/role', data)
 }
 
 export function destory(params) {
-  return request.delete('/vue-admin-template/role', { params })
+  return request.delete('/role', { params })
 }
 
 export function getPermissions(params) {
-  return request.get('/vue-admin-template/role/permissions', { params })
+  return request.get('/role/permissions', { params })
 }

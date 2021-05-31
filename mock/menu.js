@@ -24,7 +24,7 @@ const data = Mock.mock({
 module.exports = [
   // 列表
   {
-    url: '/vue-admin-template/menus',
+    url: '/menus',
     type: 'get',
     response: config => {
       const { menus } = data
@@ -39,7 +39,7 @@ module.exports = [
   },
   // 新增
   {
-    url: '/vue-admin-template/menu',
+    url: '/menu',
     type: 'post',
     response: config => {
       return {
@@ -50,7 +50,7 @@ module.exports = [
   },
   // 修改
   {
-    url: '/vue-admin-template/menu',
+    url: '/menu',
     type: 'patch',
     response: config => {
       return {
@@ -61,7 +61,7 @@ module.exports = [
   },
   // 删除
   {
-    url: '/vue-admin-template/menu',
+    url: '/menu',
     type: 'delete',
     response: config => {
       return {

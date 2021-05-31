@@ -16,7 +16,7 @@ const data = Mock.mock({
 module.exports = [
   // 列表
   {
-    url: '/vue-admin-template/roles',
+    url: '/roles',
     type: 'get',
     response: config => {
       const { query } = config
@@ -37,7 +37,7 @@ module.exports = [
   },
   // 新增
   {
-    url: '/vue-admin-template/role',
+    url: '/role',
     type: 'post',
     response: config => {
       return {
@@ -48,7 +48,7 @@ module.exports = [
   },
   // 修改
   {
-    url: '/vue-admin-template/role',
+    url: '/role',
     type: 'patch',
     response: config => {
       return {
@@ -59,7 +59,7 @@ module.exports = [
   },
   // 删除
   {
-    url: '/vue-admin-template/role',
+    url: '/role',
     type: 'delete',
     response: config => {
       return {
@@ -70,7 +70,7 @@ module.exports = [
   },
   // 所有权限
   {
-    url: '/vue-admin-template/role/permissions',
+    url: '/role/permissions',
     type: 'get',
     response: config => {
       return {

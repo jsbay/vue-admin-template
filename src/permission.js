@@ -3,14 +3,28 @@ import store from './store'
 import { Message } from 'element-ui'
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
-import { getToken } from '@/utils/auth' // get token from cookie
+import { setSecret, setSignature, getSecret, getSignature } from '@/utils/auth' // get token from cookie
 import getPageTitle from '@/utils/get-page-title'
 
+import { ssoLoginUrl } from '@/settings'
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
 const whiteList = ['/login', '/reset'] // no redirect whitelist
 
+const domain = window.location.origin
+
 router.beforeEach(async(to, from, next) => {
+  const { srt: secret, sgn: signature } = to.query
+
+  // login success, just redirect back
+  if (secret && signature) {
+    setSecret(decodeURIComponent(secret))
+    setSignature(decodeURIComponent(signature))
+
+    window.location.href = to.path
+    return
+  }
+
   // start progress bar
   NProgress.start()
 
@@ -18,9 +32,9 @@ router.beforeEach(async(to, from, next) => {
   document.title = getPageTitle(to.meta.title)
 
   // determine whether the user has logged in
-  const hasToken = getToken()
+  const hasLogin = getSecret() && getSignature()
 
-  if (hasToken) {
+  if (hasLogin) {
     if (to.path === '/login') {
       // if is logged in, redirect to the home page
       next({ path: '/' })
@@ -46,7 +60,11 @@ router.beforeEach(async(to, from, next) => {
           // remove token and go to login page to re-login
           await store.dispatch('user/resetToken')
           Message.error(error || 'Has Error')
-          next(`/login?redirect=${to.path}`)
+
+          const redirect = `${domain}${to.path}`
+          // next(`${ssoLoginUrl}?redirect=${redirect}`)
+          window.location.replace(`${ssoLoginUrl}?redirect=${redirect}`)
+
           NProgress.done()
         }
       }
@@ -57,8 +75,11 @@ router.beforeEach(async(to, from, next) => {
       // in the free login whitelist, go directly
       next()
     } else {
+      const redirect = `${domain}${to.path}`
       // other pages that do not have permission to access are redirected to the login page.
-      next(`/login?redirect=${to.path}`)
+      // next(`${ssoLoginUrl}?redirect=${redirect}`)
+      window.location.replace(`${ssoLoginUrl}?redirect=${redirect}`)
+
       NProgress.done()
     }
   }
