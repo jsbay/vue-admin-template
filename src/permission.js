@@ -3,7 +3,7 @@ import store from './store'
 import { Message } from 'element-ui'
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
-import { setSecret, setSignature, getSecret, getSignature } from '@/utils/auth' // get token from cookie
+import { setToken, getToken } from '@/utils/auth' // get token from cookie
 import getPageTitle from '@/utils/get-page-title'
 
 import { ssoLoginUrl } from '@/settings'
@@ -14,12 +14,10 @@ const whiteList = ['/login', '/reset'] // no redirect whitelist
 const domain = window.location.origin
 
 router.beforeEach(async(to, from, next) => {
-  const { srt: secret, sgn: signature } = to.query
-
+  const { token } = to.query
   // login success, just redirect back
-  if (secret && signature) {
-    setSecret(decodeURIComponent(secret))
-    setSignature(decodeURIComponent(signature))
+  if (token) {
+    setToken(token)
 
     window.location.href = to.path
     return
@@ -32,7 +30,7 @@ router.beforeEach(async(to, from, next) => {
   document.title = getPageTitle(to.meta.title)
 
   // determine whether the user has logged in
-  const hasLogin = getSecret() && getSignature()
+  const hasLogin = getToken()
 
   if (hasLogin) {
     if (to.path === '/login') {
@@ -61,9 +59,10 @@ router.beforeEach(async(to, from, next) => {
           await store.dispatch('user/resetToken')
           Message.error(error || 'Has Error')
 
-          const redirect = `${domain}${to.path}`
+          // const redirect = `${domain}${to.path}`
+          // window.location.replace(`${ssoLoginUrl}?redirect=${redirect}`)
+
           // next(`${ssoLoginUrl}?redirect=${redirect}`)
-          window.location.replace(`${ssoLoginUrl}?redirect=${redirect}`)
 
           NProgress.done()
         }
@@ -76,9 +75,10 @@ router.beforeEach(async(to, from, next) => {
       next()
     } else {
       const redirect = `${domain}${to.path}`
+      window.location.replace(`${ssoLoginUrl}?redirect=${redirect}`)
+
       // other pages that do not have permission to access are redirected to the login page.
       // next(`${ssoLoginUrl}?redirect=${redirect}`)
-      window.location.replace(`${ssoLoginUrl}?redirect=${redirect}`)
 
       NProgress.done()
     }
