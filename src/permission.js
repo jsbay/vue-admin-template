@@ -46,7 +46,7 @@ router.beforeEach(async(to, from, next) => {
           // get user info
           // await store.dispatch('user/getInfo')
 
-          const { permissions } = await store.dispatch('user/getInfo')
+          const { permissions = [] } = await store.dispatch('user/getInfo')
 
           // generate accessible routes map based on menus
           const accessRoutes = await store.dispatch('permission/generateRoutes', permissions)
@@ -59,8 +59,8 @@ router.beforeEach(async(to, from, next) => {
           await store.dispatch('user/resetToken')
           Message.error(error || 'Has Error')
 
-          // const redirect = `${domain}${to.path}`
-          // window.location.replace(`${ssoLoginUrl}?redirect=${redirect}`)
+          const redirect = `${domain}${to.path}`
+          window.location.replace(`${ssoLoginUrl}?redirect=${redirect}`)
 
           // next(`${ssoLoginUrl}?redirect=${redirect}`)
 
