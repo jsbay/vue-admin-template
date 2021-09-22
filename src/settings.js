@@ -13,5 +13,5 @@ module.exports = {
    * @description Whether show the logo in sidebar
    */
   sidebarLogo: false,
-  ssoLoginUrl: 'http://localhost:7001/login'
+  ssoLoginUrl: 'http://192.168.49.241/sso/login'
 }
