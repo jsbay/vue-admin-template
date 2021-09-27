@@ -1,47 +1,77 @@
-/*
- * @FilePath src/store/modules/permission.js
- * @Created Bay丶<baizhanying@autobio.com.cn> 2021-05-19 10:51:52
- * @Modified Bay丶<baizhanying@autobio.com.cn> 2021-05-19 11:33:29
- * @Description
- */
-
 import { asyncRoutes, constantRoutes } from '@/router'
+import { routerPermissionsKey } from '@/settings'
 
 /**
  * Use meta.role to determine if the current user has permission
  * @param roles
  * @param route
  */
-function hasPermission(permissions, route) {
-  if (route.meta && route.meta.id) {
-    return permissions.includes(route.meta.id)
-  } else {
-    return true
+
+export const noop = () => {}
+
+let hasPermission = noop
+let filterAsyncRoutes = noop
+
+if (routerPermissionsKey === 'id') {
+  hasPermission = (menuIds, route) => {
+    // console.log(menuIds, route)
+    if (route.meta && route.meta.id) {
+      return menuIds.includes(route.meta.id)
+    } else {
+      return true
+    }
+  }
+
+  filterAsyncRoutes = (routes, menuIds) => {
+    const res = []
+    // console.log('routerPermissionsKey === id')
+    // console.log('menuIds', menuIds)
+
+    routes.forEach((route) => {
+      const tmp = { ...route }
+      if (hasPermission(menuIds, tmp)) {
+        if (tmp.children) {
+          tmp.children = filterAsyncRoutes(tmp.children, menuIds)
+          if (tmp.children.length === 0) {
+            return true
+          }
+        }
+        res.push(tmp)
+      }
+    })
+    return res
+  }
+} else {
+  hasPermission = (roles, route) => {
+    // console.log(roles, route)
+    if (route.meta && route.meta.roles) {
+      return roles.some(role => route.meta.roles.includes(role))
+    } else {
+      return true
+    }
+  }
+
+  filterAsyncRoutes = (routes, roles) => {
+    const res = []
+    // console.log('routerPermissionsKey === roles')
+    // console.log('roles', roles)
+
+    routes.forEach(route => {
+      const tmp = { ...route }
+
+      if (hasPermission(roles, tmp)) {
+        if (tmp.children) {
+          tmp.children = filterAsyncRoutes(tmp.children, roles)
+        }
+        res.push(tmp)
+      }
+    })
+
+    return res
   }
 }
 
-/**
- * Filter asynchronous routing tables by recursion
- * @param routes asyncRoutes
- * @param permissions
- */
-export function filterAsyncRoutes(routes, permissions) {
-  const res = []
-
-  routes.forEach((route) => {
-    const tmp = { ...route }
-    if (hasPermission(permissions, tmp)) {
-      if (tmp.children) {
-        tmp.children = filterAsyncRoutes(tmp.children, permissions)
-        if (tmp.children.length === 0) {
-          return true
-        }
-      }
-      res.push(tmp)
-    }
-  })
-  return res
-}
+export { filterAsyncRoutes }
 
 const state = {
   routes: [],
@@ -56,9 +86,9 @@ const mutations = {
 }
 
 const actions = {
-  generateRoutes({ commit }, permissions) {
-    return new Promise((resolve) => {
-      const accessedRoutes = filterAsyncRoutes(asyncRoutes, permissions)
+  generateRoutes({ commit }, roles) {
+    return new Promise(resolve => {
+      const accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
 
       commit('SET_ROUTES', accessedRoutes)
       resolve(accessedRoutes)

@@ -1,16 +1,16 @@
 <!--
  * @FilePath src/components/FormDialog/index.vue
  * @Created Bay丶<baizhanying@autobio.com.cn> 2021-05-10 15:48:12
- * @Modified Bay丶<baizhanying@autobio.com.cn> 2021-05-10 16:04:00
+ * @Modified Bay丶<baizhanying@autobio.com.cn> 2021-09-26 15:12:53
  * @Description dialog form
 -->
 
 <template>
-  <el-dialog :width="width" :visible.sync="show" :title="title" :lock-scroll="false" destroy-on-close @closed="closed">
+  <el-dialog :width="width" :title="title" :lock-scroll="false" destroy-on-close v-bind="$attrs" v-on="$listeners">
     <slot />
     <slot name="footer">
       <template slot="footer">
-        <el-button v-if="showCancelBtn" plain @click="close(), $emit('cancel')">{{ cancelText }}</el-button>
+        <el-button v-if="showCancelBtn" plain @click="$emit('cancel')">{{ cancelText }}</el-button>
         <el-button type="primary" @click="$emit('confirm')">{{ confirmText }}</el-button>
       </template>
     </slot>
@@ -18,10 +18,8 @@
 </template>
 
 <script>
-import DialogCommon from '@/mixin/DialogCommon'
 export default {
   name: 'FormDialog',
-  mixins: [DialogCommon],
   props: {
     title: {
       type: String,
@@ -42,12 +40,6 @@ export default {
     confirmText: {
       type: String,
       default: '确定'
-    },
-    closed: {
-      type: Function,
-      default() {
-        return function() {}
-      }
     }
   }
 }

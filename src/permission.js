@@ -5,14 +5,17 @@ import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
 import { setToken, getToken } from '@/utils/auth' // get token from cookie
 import getPageTitle from '@/utils/get-page-title'
+import { routerPermissionsKey, ssoLoginUrl } from '@/settings'
 
-import { ssoLoginUrl } from '@/settings'
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
-const whiteList = ['/login', '/reset'] // no redirect whitelist
+const whiteList = ['/login', '/dev-api/*'] // no redirect whitelist
 
-const domain = window.location.origin
-
+export const replaceToLogin = (path) => {
+  const domain = window.location.origin
+  const redirect = `${domain}${path}`
+  window.location.replace(`${ssoLoginUrl}?redirect=${redirect}`)
+}
 router.beforeEach(async(to, from, next) => {
   const { token } = to.query
   // login success, just redirect back
@@ -30,39 +33,42 @@ router.beforeEach(async(to, from, next) => {
   document.title = getPageTitle(to.meta.title)
 
   // determine whether the user has logged in
-  const hasLogin = getToken()
+  const hasToken = getToken()
 
-  if (hasLogin) {
+  if (hasToken) {
     if (to.path === '/login') {
       // if is logged in, redirect to the home page
       next({ path: '/' })
       NProgress.done()
     } else {
-      const hasGetUserInfo = store.getters.username
-      if (hasGetUserInfo) {
+      // determine whether the user has got his userInfo
+      const hasUserInfo = store.getters.username
+
+      if (hasUserInfo) {
         next()
       } else {
         try {
-          // get user info
-          // await store.dispatch('user/getInfo')
+          let accessRoutes = []
 
-          const { permissions = [] } = await store.dispatch('user/getInfo')
-
-          // generate accessible routes map based on menus
-          const accessRoutes = await store.dispatch('permission/generateRoutes', permissions)
-
+          if (routerPermissionsKey === 'id') {
+            const { menuIds = [] } = await store.dispatch('user/getInfo')
+            accessRoutes = await store.dispatch('permission/generateRoutes', menuIds)
+          } else {
+            const { roles = [] } = await store.dispatch('user/getInfo')
+            accessRoutes = await store.dispatch('permission/generateRoutes', roles)
+          }
           // dynamically add accessible routes
           router.addRoutes(accessRoutes)
+
+          // hack method to ensure that addRoutes is complete
+          // set the replace: true, so the navigation will not leave a history record
           next({ ...to, replace: true })
         } catch (error) {
           // remove token and go to login page to re-login
           await store.dispatch('user/resetToken')
           Message.error(error || 'Has Error')
 
-          const redirect = `${domain}${to.path}`
-          window.location.replace(`${ssoLoginUrl}?redirect=${redirect}`)
-
-          // next(`${ssoLoginUrl}?redirect=${redirect}`)
+          replaceToLogin(to.path)
 
           NProgress.done()
         }
@@ -70,15 +76,14 @@ router.beforeEach(async(to, from, next) => {
     }
   } else {
     /* has no token*/
-    if (whiteList.indexOf(to.path) !== -1) {
+    const isWhitePath = whiteList.some(p => new RegExp(p).test(to.path))
+    if (isWhitePath) {
       // in the free login whitelist, go directly
       next()
     } else {
-      const redirect = `${domain}${to.path}`
-      window.location.replace(`${ssoLoginUrl}?redirect=${redirect}`)
-
       // other pages that do not have permission to access are redirected to the login page.
-      // next(`${ssoLoginUrl}?redirect=${redirect}`)
+
+      replaceToLogin(to.path)
 
       NProgress.done()
     }
@@ -89,3 +94,4 @@ router.afterEach(() => {
   // finish progress bar
   NProgress.done()
 })
+

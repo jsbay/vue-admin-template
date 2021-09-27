@@ -1,5 +1,8 @@
-/**
- * Created by PanJiaChen on 16/11/18.
+/*
+ * @FilePath src/utils/validate.js
+ * @Created Bay丶<baizhanying@autobio.com.cn> 2021-09-22 17:56:42
+ * @Modified Bay丶<baizhanying@autobio.com.cn> 2021-09-23 16:37:37
+ * @Description
  */
 
 /**
@@ -16,6 +19,15 @@ export function isExternal(path) {
  */
 export function validUsername(str) {
   const reg = /^A\d{4}$/
+  return reg.test(str)
+}
+
+/**
+ * @param {string} str
+ * @returns {Boolean}
+ */
+export function validEmail(str) {
+  const reg = /[^\s]+@autobio.com.cn$/
   return reg.test(str)
 }
 

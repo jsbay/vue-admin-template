@@ -8,13 +8,13 @@
         <img class="pic-404__child right" src="@/assets/404_images/404_cloud.png" alt="404">
       </div>
       <div class="bullshit">
-        <div class="bullshit__oops">出错了!</div>
-        <div class="bullshit__info">版权所属
-          <a style="color:#20a0ff" href="/" target="_blank">Vue Admin Template</a>
+        <div class="bullshit__oops">OOPS!</div>
+        <div class="bullshit__info">All rights reserved
+          <a style="color:#20a0ff" href="https://wallstreetcn.com" target="_blank">wallstreetcn</a>
         </div>
         <div class="bullshit__headline">{{ message }}</div>
-        <div class="bullshit__info">请确认访问了正确的地址, 点击下面的按钮返回主页.</div>
-        <a href="" class="bullshit__return-home">返回主页</a>
+        <div class="bullshit__info">Please check that the URL you entered is correct, or click the button below to return to the homepage.</div>
+        <a href="" class="bullshit__return-home">Back to home</a>
       </div>
     </div>
   </div>
@@ -26,15 +26,15 @@ export default {
   name: 'Page404',
   computed: {
     message() {
-      return '页面不存在, 或者没有足够的权限访问这个页面.'
+      return 'The webmaster said that you can not enter this page...'
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.wscn-http404-container {
-  transform: translate(-50%, -50%);
+.wscn-http404-container{
+  transform: translate(-50%,-50%);
   position: absolute;
   top: 40%;
   left: 50%;

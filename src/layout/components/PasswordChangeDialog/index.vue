@@ -1,12 +1,12 @@
 <!--
  * @FilePath src/layout/components/PasswordChangeDialog/index.vue
  * @Created Bay丶<baizhanying@autobio.com.cn> 2021-05-08 10:54:12
- * @Modified Bay丶<baizhanying@autobio.com.cn> 2021-05-19 16:30:15
+ * @Modified Bay丶<baizhanying@autobio.com.cn> 2021-09-26 17:15:34
  * @Description 全局修改密码 dialog
 -->
 
 <template>
-  <form-dialog title="修改密码" @closed="closed" @confirm="confirm">
+  <form-dialog :visible.sync="show" title="修改密码" @closed="closed" @confirm="confirm">
     <el-form ref="form" :rules="formRules" :model="form" label-width="80px">
       <el-form-item label="原密码" prop="oldPwd">
         <password-input ref="passwordInput1" v-model="form.oldPwd" placeholder="请输入原密码..." />
@@ -26,17 +26,19 @@
 </template>
 
 <script>
+import * as md5 from 'md5'
 import FormDialog from '@/components/FormDialog'
 import PasswordInput from '@/components/PasswordInput'
 import PasswordStrongProgress from '@/components/PasswordStrongProgress'
-import FormDialogCommon from '@/mixin/FormDialogCommon'
+import dialog from '@/mixin/dialog'
 
 import { validPassword } from '@/utils/validate'
+import { cpassword } from '@/api/login'
 
 export default {
   name: 'PasswordChangeDialog',
   components: { FormDialog, PasswordInput, PasswordStrongProgress },
-  mixins: [FormDialogCommon],
+  mixins: [dialog],
   data() {
     const validatePassword = (rule, value, callback) => {
       // 仅限制密码长度大于 6 位
@@ -90,8 +92,16 @@ export default {
         this.$refs.password.focus()
       })
     },
-    confirm() {
-      // todo 发送请求, 与后端完成交互
+    async confirm() {
+      const params = {
+        oldPwd: md5(this.form.oldPwd),
+        newPwd: md5(this.form.newPwd)
+      }
+      try {
+        await cpassword(params)
+      } finally {
+        this.closed()
+      }
     }
   }
 }

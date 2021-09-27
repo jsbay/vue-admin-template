@@ -16,6 +16,6 @@ export function destory(params) {
   return request.delete('/role', { params })
 }
 
-export function getPermissions(params) {
-  return request.get('/role/permissions', { params })
+export function getMenus(params) {
+  return request.get('/role/menus', { params })
 }

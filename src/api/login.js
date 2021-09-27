@@ -22,3 +22,11 @@ export function logout() {
     method: 'post'
   })
 }
+
+export function cpassword(data) {
+  return request({
+    url: '/cpassword',
+    method: 'post',
+    data
+  })
+}

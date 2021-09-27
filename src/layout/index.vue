@@ -3,39 +3,39 @@
     <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside" />
     <sidebar class="sidebar-container" />
     <div class="main-container">
-      <div :class="{'fixed-header':fixedHeader}">
+      <div :class="{ 'fixed-header':fixedHeader, 'tags-header': needTagsView }">
         <navbar @change-password="$refs.passChangeDialog.open()" />
+        <tags-view v-if="needTagsView" />
       </div>
       <app-main />
-
-      <password-change-dialog ref="passChangeDialog" />
     </div>
+
+    <password-change-dialog ref="passChangeDialog" />
   </div>
 </template>
 
 <script>
-import { Navbar, Sidebar, AppMain, PasswordChangeDialog } from './components'
-import ResizeMixin from './mixin/ResizeHandler'
+import { mapState } from 'vuex'
 
+import { Navbar, Sidebar, AppMain, TagsView, PasswordChangeDialog } from './components'
+import ResizeMixin from './mixin/ResizeHandler'
 export default {
   name: 'Layout',
   components: {
     Navbar,
     Sidebar,
     AppMain,
+    TagsView,
     PasswordChangeDialog
   },
   mixins: [ResizeMixin],
   computed: {
-    sidebar() {
-      return this.$store.state.app.sidebar
-    },
-    device() {
-      return this.$store.state.app.device
-    },
-    fixedHeader() {
-      return this.$store.state.settings.fixedHeader
-    },
+    ...mapState({
+      sidebar: state => state.app.sidebar,
+      device: state => state.app.device,
+      fixedHeader: state => state.settings.fixedHeader,
+      needTagsView: state => state.settings.tagsView
+    }),
     classObj() {
       return {
         hideSidebar: !this.sidebar.opened,

@@ -1,10 +1,8 @@
 import axios from 'axios'
-import { Message } from 'element-ui'
-import { MessageBox } from 'element-ui'
+import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
 
-import { ssoLoginUrl } from '@/settings'
 // create an axios instance
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
@@ -58,14 +56,13 @@ service.interceptors.response.use(
       // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
       if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
         // to re-login
-        MessageBox.confirm('您已经退出登录, 您可点击 取消 停留在本页, 或点击 重新登录 重新登录', '退出确认', {
-          confirmButtonText: '重新登录',
-          cancelButtonText: '取消',
+        MessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
+          confirmButtonText: 'Re-Login',
+          cancelButtonText: 'Cancel',
           type: 'warning'
         }).then(() => {
           store.dispatch('user/resetToken').then(() => {
-            // location.reload()
-            window.location.replace(`${ssoLoginUrl}?redirect=${window.location.origin}${window.location.pathname}`)
+            location.reload()
           })
         })
       }

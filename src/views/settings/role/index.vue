@@ -1,42 +1,26 @@
 <!--
  * @FilePath src/views/settings/role/index.vue
  * @Created Bay丶<baizhanying@autobio.com.cn> 2021-05-18 15:48:36
- * @Modified Bay丶<baizhanying@autobio.com.cn> 2021-05-18 17:59:47
+ * @Modified Bay丶<baizhanying@autobio.com.cn> 2021-09-26 15:37:44
  * @Description 系统设置 - 权限管理
 -->
 
 <template>
-  <div class="app-container">
+  <div v-loading="loading" class="app-container">
     <pagination-table ref="paginationTable" :total="total" @current-change="handleCurrentChange" @size-change="handleSizeChange" @create="handleCreate">
 
-      <template #top>
-        <el-row>
-          <el-col>
-            <el-form ref="form" inline :model="form" label-width="0" class="table-filter-form">
-              <el-form-item>
-                <el-input v-model="form.keyword" placeholder="权限名" />
-              </el-form-item>
-              <el-form-item>
-                <el-button type="primary" @click="handleFilter">查询</el-button>
-              </el-form-item>
-            </el-form>
-          </el-col>
-        </el-row>
-      </template>
-
       <el-table :data="roles" border stripe>
-        <el-table-column prop="role" label="权限名" align="center" width="100px" />
-
-        <el-table-column prop="status" label="状态" align="center" width="80px">
+        <search-table-column prop="role" label="权限名" align="center" width="100px" @search="handleSearch" @reset="handleReset" />
+        <el-table-column prop="state" label="状态" align="center" width="80px">
           <template slot-scope="{ row }">
-            <el-tag v-if="row.status === 0" type="warning" effect="dark">禁用</el-tag>
+            <el-tag v-if="row.state === 0" type="warning" effect="dark">禁用</el-tag>
             <el-tag v-else type="success" effect="dark">正常</el-tag>
           </template>
         </el-table-column>
 
-        <el-table-column prop="permissions" label="权限">
+        <el-table-column prop="menus" label="权限">
           <template slot-scope="{ row }">
-            {{ parsePermissions(row) }}
+            {{ parseMenus(row) }}
           </template>
         </el-table-column>
 
@@ -49,59 +33,62 @@
       </el-table>
     </pagination-table>
 
-    <create-dialog ref="createDialog" :permissions="permissions" @success="getRoles" />
-    <modify-dialog ref="modifyDialog" :permissions="permissions" :role="role" @success="getRoles" />
+    <create-modify-dialog ref="createModifyDialog" :role="role" :mode="dialogMode" :menus="menus" @success="getRoles" />
   </div>
 </template>
 
 <script>
-import PaginationTable from '@/components/PaginationTable'
 
-import CreateDialog from '@/views/settings/role/components/CreateDialog'
-import ModifyDialog from '@/views/settings/role/components/ModifyDialog'
+import CreateModifyDialog from './components/CreateModifyDialog'
 
-import { getList, getPermissions, destory } from '@/api/role'
+import { getList, getMenus, destory } from '@/api/role'
 
 export default {
   name: 'Role',
-  components: {
-    PaginationTable,
-    CreateDialog,
-    ModifyDialog
-  },
+  components: { CreateModifyDialog },
   data() {
     return {
+      loading: false,
       form: {
         page: 1,
         limit: 20
       },
+      dialogMode: 'create',
       roles: [],
       total: 0,
       role: {},
-      permissions: []
+      menus: []
     }
   },
   mounted() {
     this.getRoles()
-    this.getPermissions()
+    this.getMenus()
   },
   methods: {
     async getRoles() {
-      const loading = this.$loading()
+      this.loading = true
 
       const { data: { roles, total }} = await getList(this.form)
       this.roles = roles
       this.total = total
 
-      loading.close()
+      this.loading = false
     },
-    async getPermissions() {
-      const { data: { permissions }} = await getPermissions()
-      this.permissions = permissions
+    async getMenus() {
+      const { data: { menus }} = await getMenus()
+      this.menus = menus
     },
-    parsePermissions(row) {
-      const permissions = row.permissions.map(permission => permission.name)
-      return permissions.join(', ')
+    parseMenus(row) {
+      const menus = row.menus.map(menu => menu.name)
+      return menus.join(', ')
+    },
+    handleSearch(prop, value) {
+      this.$set(this.form, prop, value)
+      this.handleFilter()
+    },
+    handleReset(prop) {
+      this.$set(this.form, prop, undefined)
+      this.handleFilter()
     },
     // 查询
     handleFilter() {
@@ -109,12 +96,15 @@ export default {
     },
     // 新增
     handleCreate() {
-      this.$refs.createDialog.open()
+      this.role = undefined
+      this.dialogMode = 'create'
+      this.$refs.createModifyDialog.open()
     },
     // 修改
     handleModify(row) {
       this.role = row
-      this.$refs.modifyDialog.open()
+      this.dialogMode = 'modify'
+      this.$refs.createModifyDialog.open()
     },
     // 确认删除
     async confirmDestory(row) {

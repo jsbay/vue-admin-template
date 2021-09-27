@@ -25,8 +25,11 @@ export default {
   position: relative;
   overflow: hidden;
 }
-.fixed-header+.app-main {
+.fixed-header + .app-main {
   padding-top: 50px;
+}
+.fixed-header.tags-header + .app-main {
+  padding-top: 84px;
 }
 </style>
 

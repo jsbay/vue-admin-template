@@ -1,48 +1,45 @@
 <!--
  * @FilePath src/views/menu/index.vue
  * @Created Bay丶<baizhanying@autobio.com.cn> 2021-05-10 11:45:26
- * @Modified Bay丶<baizhanying@autobio.com.cn> 2021-05-18 16:53:33
+ * @Modified Bay丶<baizhanying@autobio.com.cn> 2021-09-26 15:38:12
  * @Description 菜单管理
 -->
 
 <template>
-  <div class="app-container">
+  <div v-loading="loading" class="app-container">
     <el-row class="table-top-bar">
       <el-col class="text-right">
         <el-button type="primary" @click="handleCreate(undefined)">新增</el-button>
       </el-col>
     </el-row>
     <el-table :data="menus" element-loading-text="加载中..." border fit stripe highlight-current-row row-key="id" default-expand-all>
-      <el-table-column label="菜单名" prop="menu" />
-      <el-table-column label="权限 ID" prop="permission" />
+      <el-table-column label="菜单名" prop="menuName" />
+      <el-table-column label="权限 ID" prop="menuId" />
 
       <el-table-column label="操作" align="center" width="120px">
         <template slot-scope="{ row }">
           <el-link type="primary" :underline="false" @click="handleCreate(row)">新增</el-link>
-          <el-link type="danger" :underline="false" @click="confirmDestory(row)"> 删除</el-link>
+          <el-link type="danger" :underline="false" @click="confirmDestory(row)">删除</el-link>
           <el-link type="warning" :underline="false" @click="handleModify(row)">修改</el-link>
         </template>
       </el-table-column>
     </el-table>
-    <create-dialog ref="createDialog" :parent-node="parentNode" @success="getMenus" />
-    <modify-dialog ref="modifyDialog" :parent-node="parentNode" @success="getMenus" />
+    <create-modify-dialog ref="createModifyDialog" :parent-node="parentNode" :mode="dialogMode" @success="getMenus" />
   </div>
 </template>
 
 <script>
+import CreateModifyDialog from './components/CreateModifyDialog'
 import { getList, destory } from '@/api/menu'
 
-import CreateDialog from '@/views/settings/menu/components/CreateDialog'
-import ModifyDialog from '@/views/settings/menu/components/ModifyDialog'
 export default {
   name: 'Menu',
-  components: {
-    CreateDialog,
-    ModifyDialog
-  },
+  components: { CreateModifyDialog },
   data() {
     return {
+      loading: false,
       menus: [],
+      dialogMode: 'create',
       parentNode: undefined
     }
   },
@@ -50,11 +47,6 @@ export default {
     this.getMenus()
   },
   methods: {
-    // 新增
-    handleCreate(parentNode) {
-      this.parentNode = parentNode
-      this.$refs.createDialog.open()
-    },
     // 确认删除
     async confirmDestory(node) {
       try {
@@ -73,19 +65,26 @@ export default {
       await destory({ id })
       await this.getMenus()
     },
+    // 新增
+    handleCreate(node) {
+      this.parentNode = node
+      this.dialogMode = 'create'
+      this.$refs.createModifyDialog.open()
+    },
     // 修改
     handleModify(node) {
       this.parentNode = node
-      this.$refs.modifyDialog.open()
+      this.dialogMode = 'modify'
+      this.$refs.createModifyDialog.open()
     },
     // 获取 菜单数据
     async getMenus() {
-      const loading = this.$loading()
+      this.loading = true
 
       const { data: { menus }} = await getList()
       this.menus = menus
 
-      loading.close()
+      this.loading = false
     }
   }
 }

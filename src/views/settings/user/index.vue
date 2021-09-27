@@ -1,47 +1,35 @@
 <!--
  * @FilePath src/views/user/index.vue
  * @Created Bay丶<baizhanying@autobio.com.cn> 2021-05-12 10:19:14
- * @Modified Bay丶<baizhanying@autobio.com.cn> 2021-05-19 14:31:43
+ * @Modified Bay丶<baizhanying@autobio.com.cn> 2021-09-26 17:19:23
  * @Description
 -->
 
 <template>
-  <div class="app-container">
+  <div v-loading="loading" class="app-container">
     <pagination-table ref="paginationTable" :total="total" @current-change="handleCurrentChange" @size-change="handleSizeChange" @create="handleCreate">
+      <el-table :data="users" border stripe :max-height="tableMaxHeight" size="mini">
 
-      <template #top>
-        <el-row>
-          <el-col>
-            <el-form ref="form" inline :model="form" label-width="0" class="table-filter-form">
-              <el-form-item>
-                <el-input v-model="form.keyword" placeholder="用户 ID/用户名/账户" />
-              </el-form-item>
-              <el-form-item>
-                <el-button type="primary" @click="handleFilter">查询</el-button>
-              </el-form-item>
-            </el-form>
-          </el-col>
-        </el-row>
-      </template>
-
-      <el-table :data="users" border stripe>
-
-        <el-table-column prop="id" label="用户 ID" align="center" width="100px" />
+        <search-table-column prop="id" label="用户 ID" align="center" width="100px" @search="handleSearch" @reset="handleReset" />
         <el-table-column prop="createtime" label="创建时间" align="center" width="150px" />
-        <el-table-column prop="username" label="账户" align="center" width="80px" />
-        <el-table-column prop="nickname" label="用户名" align="center" width="80px" />
+
+        <search-table-column prop="username" label="账户" align="center" width="80px" @search="handleSearch" @reset="handleReset" />
+
+        <search-table-column prop="nickname" label="用户名" align="center" width="100px" @search="handleSearch" @reset="handleReset" />
+
         <el-table-column prop="role" label="权限" align="center" width="100px">
-          <template slot-scope="{ row }">{{ row.role.name }}</template>
+          <template slot-scope="{ row }">{{ row.roles.map(r=>r.name).join(', ') }}</template>
         </el-table-column>
 
-        <el-table-column prop="status" label="账户状态" align="center" width="100px">
+        <filter-table-column prop="state" label="账户状态" align="center" width="100px" :i-filters="[{ text: '禁用', value: -1 }, { text: '注册中', value: 0 }, { text: '正常', value: 1 }]" multiple @filter="handleSearch" @reset="handleReset">
           <template slot-scope="{ row }">
-            <el-tag v-if="row.status === -1" type="warning" effect="dark">禁用</el-tag>
-            <el-tag v-else-if="row.status === 0" type="info" effect="dark">注册中</el-tag>
-            <el-tag v-else type="success" effect="dark">正常</el-tag>
+            <el-tag v-if="row.state === -1" type="warning" effect="dark" size="mini">禁用</el-tag>
+            <el-tag v-else-if="row.state === 0" type="info" effect="dark" size="mini">注册中</el-tag>
+            <el-tag v-else type="success" effect="dark" size="mini">正常</el-tag>
           </template>
-        </el-table-column>
-        <el-table-column prop="email" label="邮箱" />
+        </filter-table-column>
+
+        <search-table-column prop="email" label="邮箱" @search="handleSearch" @reset="handleReset" />
 
         <el-table-column prop="action" label="操作" align="center" width="100px">
           <template slot-scope="{ row }">
@@ -53,28 +41,23 @@
       </el-table>
     </pagination-table>
 
-    <create-dialog ref="createDialog" :roles="roles" @success="getUsers" />
-    <modify-dialog ref="modifyDialog" :roles="roles" :user="user" @success="getUsers" />
+    <create-modify-dialog ref="createModifyDialog" :roles="roles" :mode="dialogMode" :user="user" @success="getUsers" />
   </div>
 </template>
 
 <script>
 import { getList, destory, getRoles } from '@/api/user'
-import PaginationTable from '@/components/PaginationTable'
 
-import CreateDialog from '@/views/settings/user/components/CreateDialog'
-import ModifyDialog from '@/views/settings/user/components/ModifyDialog'
+import CreateModifyDialog from './components/CreateModifyDialog'
 export default {
   name: 'User',
-  components: {
-    PaginationTable,
-    CreateDialog,
-    ModifyDialog
-  },
+  components: { CreateModifyDialog },
   data() {
     return {
+      loading: false,
       total: 0,
       users: [],
+      dialogMode: 'create',
       form: {
         page: 1,
         limit: 20
@@ -83,33 +66,52 @@ export default {
       roles: []
     }
   },
+  computed: {
+    tableMaxHeight() {
+      const windowHeight = window.innerHeight || document.documentElement.clientHeight
+      return windowHeight - 164
+    }
+  },
   mounted() {
     this.getUsers()
     this.getRoles()
   },
   methods: {
     async getUsers() {
-      const loading = this.$loading()
+      this.loading = true
 
       const { data: { users, total }} = await getList(this.form)
       this.users = users
       this.total = total
 
-      loading.close()
+      this.loading = false
     },
     async getRoles() {
       const { data: { roles }} = await getRoles()
       this.roles = roles
     },
+    handleSearch(prop, value) {
+      this.$set(this.form, prop, value)
+      this.handleFilter()
+    },
+    handleReset(prop) {
+      this.$set(this.form, prop, undefined)
+      this.handleFilter()
+    },
     handleFilter() {
       this.$refs.paginationTable.resetCurrentPage()
     },
+    // 新增
     handleCreate() {
-      this.$refs.createDialog.open()
+      this.user = undefined
+      this.dialogMode = 'create'
+      this.$refs.createModifyDialog.open()
     },
+    // 修改
     handleModify(row) {
       this.user = row
-      this.$refs.modifyDialog.open()
+      this.dialogMode = 'modify'
+      this.$refs.createModifyDialog.open()
     },
     // 确认删除
     async confirmDestory(row) {

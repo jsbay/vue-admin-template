@@ -1,7 +1,7 @@
 <!--
  * @FilePath src/components/PaginationTable/index.vue
  * @Created Bay丶<baizhanying@autobio.com.cn> 2021-05-14 14:18:54
- * @Modified Bay丶<baizhanying@autobio.com.cn> 2021-05-18 16:49:44
+ * @Modified Bay丶<baizhanying@autobio.com.cn> 2021-09-01 17:42:01
  * @Description 带有分页的 table
 -->
 
@@ -37,7 +37,7 @@ export default {
     return {
       page: 1,
       limit: 20,
-      pageSizes: [20, 30, 50, 100]
+      pageSizes: [20, 50, 100, 200]
     }
   },
   methods: {
@@ -58,6 +58,6 @@ export default {
 
 <style lang="scss" scoped>
 .pagination-row {
-  padding: 10px 0;
+  padding-bottom: 10px;
 }
 </style>

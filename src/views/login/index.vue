@@ -1,7 +1,7 @@
 <!--
  * @FilePath src/views/login/index.vue
  * @Created Bay丶<baizhanying@autobio.com.cn> 2021-05-07 15:01:04
- * @Modified Bay丶<baizhanying@autobio.com.cn> 2021-05-19 16:44:53
+ * @Modified Bay丶<baizhanying@autobio.com.cn> 2021-09-22 13:50:45
  * @Description 登录
 -->
 
@@ -40,8 +40,8 @@
 </template>
 
 <script>
+import * as md5 from 'md5'
 import PasswordInput from '@/components/PasswordInput'
-
 import { validUsername, validPassword } from '@/utils/validate'
 
 export default {
@@ -56,13 +56,6 @@ export default {
       }
     }
     const validatePassword = (rule, value, callback) => {
-      // 仅限制密码长度大于 6 位
-      // if (value.length < 6) {
-      //   callback(new Error('密码不能少于 6 个字符'))
-      // } else {
-      //   callback()
-      // }
-
       if (!validPassword(value)) {
         callback(new Error('密码长度必须6-16之间，且密码必须至少包含一个数字，一个大写字母，一个小写字母和一个特殊字符。'))
       } else {
@@ -112,7 +105,7 @@ export default {
       this.$refs.form.validate(valid => {
         if (valid) {
           this.loading = true
-          this.$store.dispatch('user/login', this.form).then(() => {
+          this.$store.dispatch('user/login', { ...this.form, password: md5(this.form.password) }).then(() => {
             this.$router.push({ path: this.redirect || '/' })
             this.loading = false
           }).catch(() => {

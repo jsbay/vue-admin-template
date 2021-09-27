@@ -1,14 +1,12 @@
 'use strict'
 const path = require('path')
-const WebpackBar = require('webpackbar')
-
 const defaultSettings = require('./src/settings.js')
 
 function resolve(dir) {
   return path.join(__dirname, dir)
 }
 
-const name = defaultSettings.title || 'vue Admin Template' // page title
+const name = defaultSettings.title || '药敏管理系统' // page title
 
 // If your port is set to 80,
 // use administrator privileges to execute the command line.
@@ -18,7 +16,6 @@ const name = defaultSettings.title || 'vue Admin Template' // page title
 const port = process.env.port || process.env.npm_config_port || 9528 // dev port
 
 // All configuration item explanations can be find in https://cli.vuejs.org/config/
-
 module.exports = {
   /**
    * You will need to set publicPath if you plan to deploy your site under a sub path,
@@ -35,18 +32,19 @@ module.exports = {
   devServer: {
     port: port,
     open: true,
-    progress: false,
     overlay: {
       warnings: false,
       errors: true
     },
     // before: require('./mock/mock-server.js'),
     proxy: {
-      // change xxx-api/login => mock/login
-      // detail: https://cli.vuejs.org/config/#devserver-proxy
-      [process.env.VUE_APP_BASE_API]: {
+      '/dev-api': {
         target: 'http://localhost:7001',
-        changeOrigin: true
+        changeOrigin: true, // needed for virtual hosted sites
+        ws: true, // proxy websockets
+        pathRewrite: {
+          '/dev-api': '/api'
+        }
       }
     }
   },
@@ -74,9 +72,6 @@ module.exports = {
 
     // when there are many pages, it will cause too many meaningless requests
     config.plugins.delete('prefetch')
-
-    // WebpackBar
-    config.plugin().use(WebpackBar, [{ name: 'server' }])
 
     // set svg-sprite-loader
     config.module
