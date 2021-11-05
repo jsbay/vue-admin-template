@@ -36,6 +36,7 @@ import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
 
+import { ssoLoginUrl } from '@/settings'
 export default {
   components: {
     Breadcrumb,
@@ -54,7 +55,8 @@ export default {
     },
     async logout() {
       await this.$store.dispatch('user/logout')
-      this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+      const domain = window.location.origin
+      window.location.replace(`${ssoLoginUrl}?redirect=${domain}${this.$route.fullPath}`)
     }
   }
 }
