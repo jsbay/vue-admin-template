@@ -8,25 +8,6 @@ const tokens = {
   }
 }
 
-const users = {
-  'admin-token': {
-    roles: ['admin'],
-    introduction: 'I am a super administrator',
-    avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
-    nickname: '系统管理员',
-    username: 'A3245',
-    menuIds: ['1', '2', '3', '4']
-  },
-  'editor-token': {
-    roles: ['editor'],
-    introduction: 'I am an editor',
-    avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
-    nickname: '普通用户',
-    username: 'A3246',
-    menuIds: ['4']
-  }
-}
-
 module.exports = [
   // user login
   {
@@ -55,21 +36,17 @@ module.exports = [
   {
     url: '/userinfo\.*',
     type: 'get',
-    response: config => {
-      const { token } = config.query
-      const info = users[token]
-
-      // mock error
-      if (!info) {
-        return {
-          code: 50008,
-          message: 'Login failed, unable to get user details.'
-        }
-      }
-
+    response: _ => {
       return {
         code: 0,
-        data: info
+        data: {
+          roles: ['admin', 'editor'],
+          introduction: 'I am a super administrator',
+          avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
+          nickname: '系统管理员',
+          username: 'A3245',
+          menuIds: ['1', '2', '3', '4']
+        }
       }
     }
   },
